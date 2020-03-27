@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -26,7 +27,7 @@ func constructDiskMessage(data CreateSnapshotParams, queueUrl *string) *sqs.Send
 	}
 }
 
-func SpawnHandler(ctx context.Context) error {
+func SpawnHandler(ctx context.Context) (*Response, error) {
 	folderId := os.Getenv("FOLDER_ID")
 	mode := os.Getenv("MODE")
 	queueUrl := os.Getenv("QUEUE_URL")
@@ -38,7 +39,7 @@ func SpawnHandler(ctx context.Context) error {
 		Credentials: ycsdk.InstanceServiceAccount(),
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
@@ -52,7 +53,7 @@ func SpawnHandler(ctx context.Context) error {
 	svc := sqs.New(sess)
 	// Получаем итератор
 	discIter := sdk.Compute().Disk().DiskIterator(ctx, folderId)
-
+	var diskIds []string
 	// И итерируемся по всем дискам в фолдере
 	for discIter.Next() {
 		d := discIter.Value()
@@ -75,8 +76,12 @@ func SpawnHandler(ctx context.Context) error {
 		_, err = svc.SendMessage(params)
 		if err != nil {
 			fmt.Println("Error", err)
-			return err
+			return nil, err
 		}
+		diskIds = append(diskIds, d.Id)
 	}
-	return nil
+	return &Response{
+		StatusCode: 200,
+		Body:       strings.Join(diskIds, ", "),
+	}, nil
 }

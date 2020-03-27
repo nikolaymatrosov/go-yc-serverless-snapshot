@@ -45,3 +45,8 @@ type CreateSnapshotParams struct {
 	FolderId string `json:"folderId"`
 	DiskId   string `json:"diskId"`
 }
+
+type Response struct {
+	StatusCode int         `json:"statusCode"`
+	Body       interface{} `json:"body"`
+}

@@ -2,15 +2,17 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/compute/v1"
 	ycsdk "github.com/yandex-cloud/go-sdk"
 )
 
-func DeleteHandler(ctx context.Context) error {
+func DeleteHandler(ctx context.Context) (*Response, error) {
 	folderId := os.Getenv("FOLDER_ID")
 	// Авторизация в SDK при помощи сервисного аккаунта
 	sdk, err := ycsdk.Build(ctx, ycsdk.Config{
@@ -19,12 +21,12 @@ func DeleteHandler(ctx context.Context) error {
 		Credentials: ycsdk.InstanceServiceAccount(),
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Получаем итератор снепшотов при помощи YC SDK
 	snapshotIter := sdk.Compute().Snapshot().SnapshotIterator(ctx, folderId)
-
+	deletedIds := []string{}
 	// Итрерируемся по нему
 	for snapshotIter.Next() {
 		snapshot := snapshotIter.Value()
@@ -40,17 +42,27 @@ func DeleteHandler(ctx context.Context) error {
 		now := time.Now()
 		expirationTs, err := strconv.Atoi(expirationTsVal)
 		if err != nil {
-			return nil
+			continue
 		}
 
 		// Если он есть и время сейчас больше, чем то что записано в лейбл, то удаляем снепшот.
 		if int(now.Unix()) > expirationTs {
-			_, _ = sdk.Compute().Snapshot().Delete(ctx, &compute.DeleteSnapshotRequest{
+			op, err := sdk.WrapOperation(sdk.Compute().Snapshot().Delete(ctx, &compute.DeleteSnapshotRequest{
 				SnapshotId: snapshot.Id,
-			})
+			}))
+			if err != nil {
+				return nil, err
+			}
+			meta, err := op.Metadata()
+			if err != nil {
+				return nil, err
+			}
+			deletedIds = append(deletedIds, meta.(*compute.DeleteSnapshotMetadata).GetSnapshotId())
 		}
 	}
 
-	return nil
+	return &Response{
+		StatusCode: 200,
+		Body:       fmt.Sprintf("Deleted expired snapshots: %s", strings.Join(deletedIds, ", ")),
+	}, nil
 }
-
