@@ -12,6 +12,7 @@ import (
 	ycsdk "github.com/yandex-cloud/go-sdk"
 )
 
+//goland:noinspection GoUnusedExportedFunction
 func DeleteHandler(ctx context.Context) (*Response, error) {
 	folderId := os.Getenv("FOLDER_ID")
 	// Авторизация в SDK при помощи сервисного аккаунта
@@ -25,7 +26,10 @@ func DeleteHandler(ctx context.Context) (*Response, error) {
 	}
 
 	// Получаем итератор снепшотов при помощи YC SDK
-	snapshotIter := sdk.Compute().Snapshot().SnapshotIterator(ctx, folderId)
+	iterReq := &compute.ListSnapshotsRequest{
+		FolderId: folderId,
+	}
+	snapshotIter := sdk.Compute().Snapshot().SnapshotIterator(ctx, iterReq)
 	deletedIds := []string{}
 	// Итрерируемся по нему
 	for snapshotIter.Next() {

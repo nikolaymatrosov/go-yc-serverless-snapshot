@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/yandex-cloud/go-genproto/yandex/cloud/compute/v1"
 	"os"
 	"strings"
 
@@ -27,6 +28,7 @@ func constructDiskMessage(data CreateSnapshotParams, queueUrl *string) *sqs.Send
 	}
 }
 
+//goland:noinspection GoUnusedExportedFunction
 func SpawnHandler(ctx context.Context) (*Response, error) {
 	folderId := os.Getenv("FOLDER_ID")
 	mode := os.Getenv("MODE")
@@ -51,8 +53,12 @@ func SpawnHandler(ctx context.Context) (*Response, error) {
 	}))
 
 	svc := sqs.New(sess)
+
 	// Получаем итератор
-	discIter := sdk.Compute().Disk().DiskIterator(ctx, folderId)
+	iterReq := &compute.ListDisksRequest{
+		FolderId: folderId,
+	}
+	discIter := sdk.Compute().Disk().DiskIterator(ctx, iterReq)
 	var diskIds []string
 	// И итерируемся по всем дискам в фолдере
 	for discIter.Next() {

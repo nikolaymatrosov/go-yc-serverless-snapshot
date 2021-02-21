@@ -1,19 +1,19 @@
 module github.com/nikolaymatrosov/go-yc-serverless-snapshot
 
-go 1.14
+go 1.15
 
 require (
-	github.com/aws/aws-sdk-go v1.29.32
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
-	github.com/ghodss/yaml v1.0.0 // indirect
-	github.com/golang/protobuf v1.3.5 // indirect
-	github.com/hashicorp/go-multierror v1.0.0 // indirect
+	github.com/aws/aws-sdk-go v1.37.15
+	github.com/golang/protobuf v1.4.3 // indirect
+	github.com/hashicorp/errwrap v1.1.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.0 // indirect
 	github.com/mitchellh/go-testing-interface v1.14.0 // indirect
-	github.com/stretchr/testify v1.5.1 // indirect
-	github.com/yandex-cloud/go-genproto v0.0.0-20200324141821-6305a68f62b1
-	github.com/yandex-cloud/go-sdk v0.0.0-20200323080541-1b2fb4d2247e
-	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
-	google.golang.org/genproto v0.0.0-20200326112834-f447254575fd // indirect
-	google.golang.org/grpc v1.28.0 // indirect
-	gopkg.in/yaml.v2 v2.2.8 // indirect
+	github.com/yandex-cloud/go-genproto v0.0.0-20210211094722-b4ab90f1132d
+	github.com/yandex-cloud/go-sdk v0.0.0-20210211095836-1e646debd48a
+	golang.org/x/net v0.0.0-20210220033124-5f55cee0dc0d // indirect
+	golang.org/x/sys v0.0.0-20210220050731-9a76102bfb43 // indirect
+	golang.org/x/text v0.3.5 // indirect
+	google.golang.org/genproto v0.0.0-20210219173056-d891e3cb3b5b // indirect
+	google.golang.org/grpc v1.35.0 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

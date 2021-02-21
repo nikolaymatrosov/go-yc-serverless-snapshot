@@ -13,6 +13,7 @@ import (
 	"github.com/yandex-cloud/go-sdk"
 )
 
+//goland:noinspection GoUnusedExportedFunction
 func SnapshotHandler(ctx context.Context, event MessageQueueEvent) (*Response, error) {
 	// Авторизация в SDK при помощи сервисного аккаунта
 	sdk, err := ycsdk.Build(ctx, ycsdk.Config{
