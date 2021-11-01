@@ -77,6 +77,7 @@ func SpawnHandler(ctx context.Context) (*Response, error) {
 		params := constructDiskMessage(CreateSnapshotParams{
 			FolderId: folderId,
 			DiskId:   d.Id,
+			DiskName: d.Name,
 		}, &queueUrl)
 		// Отправляем в Yandex Message Queue сообщение с праметрами какой диск нужно снепшотить
 		_, err = svc.SendMessage(params)
