@@ -19,7 +19,7 @@ cp go.sum ./build
 
 yc serverless function version create \
   --function-name=spawn-snapshot-tasks \
-  --runtime golang114 \
+  --runtime golang116 \
   --entrypoint spawn-snapshot-tasks.SpawnHandler \
   --memory 128m \
   --execution-timeout 30s \
@@ -29,7 +29,7 @@ yc serverless function version create \
 
 yc serverless function version create \
   --function-name=snapshot-disks \
-  --runtime golang114 \
+  --runtime golang116 \
   --entrypoint snapshot-disks.SnapshotHandler \
   --memory 128m \
   --execution-timeout 60s \
@@ -39,7 +39,7 @@ yc serverless function version create \
 
 yc serverless function version create \
   --function-name=delete-expired-snapshots \
-  --runtime golang114 \
+  --runtime golang116 \
   --entrypoint delete-expired.DeleteHandler \
   --memory 128m \
   --execution-timeout 60s \
