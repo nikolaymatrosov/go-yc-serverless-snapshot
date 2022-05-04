@@ -15,7 +15,7 @@ yc serverless function create --name=delete-expired-snapshots
 
 yc serverless trigger create timer \
     --name=spawn-snapshot-tasks \
-    --cron-expression="$CRATE_CRON" \
+    --cron-expression="$CREATE_CRON" \
     --invoke-function-name=spawn-snapshot-tasks \
     --invoke-function-tag="\$latest" \
     --invoke-function-service-account-id=$SERVICE_ACCOUNT_ID
