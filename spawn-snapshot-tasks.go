@@ -74,10 +74,16 @@ func SpawnHandler(ctx context.Context) (*Response, error) {
 			continue
 		}
 
+		// Если у диска не задано в настройках имя, используем для генерации имени снимка идентификатор диска
+		diskName := d.Name
+		if diskName == "" {
+			diskName = d.Id
+		}
+
 		params := constructDiskMessage(CreateSnapshotParams{
 			FolderId: folderId,
 			DiskId:   d.Id,
-			DiskName: d.Name,
+			DiskName: diskName,
 		}, &queueUrl)
 		// Отправляем в Yandex Message Queue сообщение с праметрами какой диск нужно снепшотить
 		_, err = svc.SendMessage(params)
